@@ -34,7 +34,7 @@ socket.on('products', (products) => {
     const productsContainer = document.getElementById('products-container');
     productsContainer.innerHTML = '';
 
-    products.forEach((product) => {
+    products.docs.forEach((product) => {
         const productCard = `
         <div class="card mb-3">
             <div class="row g-0">

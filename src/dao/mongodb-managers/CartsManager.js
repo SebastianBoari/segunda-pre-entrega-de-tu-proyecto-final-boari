@@ -4,7 +4,7 @@ class CartsManager {
   // Get
   getCarts = async () => {
     try{
-      const carts = await cartsModel.find().lean().exec();
+      const carts = await cartsModel.find().populate("products.product");
       return carts;
     } catch (error){
       console.error(`Error trying to bring carts: ${error}`);
@@ -14,7 +14,7 @@ class CartsManager {
   // Get by id
   getCartById = async (id) => {
     try {
-      const cart = await cartsModel.findById(id).lean().exec();
+      const cart = await cartsModel.findById(id).lean().populate("products.product");
       return cart;
     } catch (error){
       console.error(`Error trying to bring cart by id: ${error}`);
@@ -60,6 +60,78 @@ class CartsManager {
       console.error(`Error trying to add product to the cart: ${error}`);
     };
   };
+
+  // Delete product of cart
+  deleteProductOfCart = async (cid, pid) => {
+    try {
+      const updatedCart = await cartsModel.findOneAndUpdate(
+        { _id: cid },
+        { $pull: { products: { product: pid } } },
+        { new: true }
+      ).populate("products.product");
+
+      if (updatedCart) {
+        return updatedCart;
+      } else {
+        return 'Product not found in the cart.';
+      };
+
+    }catch(error){
+      console.error(`Error trying to delete a product from the cart: ${error}`);
+    };
+  };
+
+  
+  deleteAllProductsOfCart = async (cid) => {
+    try {
+      const updatedCart = await cartsModel.findOneAndUpdate(
+        { _id: cid },
+        { $set: { products: [] } },
+        { new: true }
+      ).populate("products.product");
+
+      if (updatedCart) {
+        return updatedCart;
+      } else {
+        return 'No products found in the cart.';
+      }
+
+    } catch (error) {
+      console.error(`Error trying to delete all products from the cart: ${error}`);
+    };
+  };
+
+  updateAllProducts = async (cid, products) => {
+    try {
+      await this.deleteAllProductsOfCart(cid);
+      await products.forEach((product) => {
+        this.addProduct(cid, product.id);
+      });
+
+      return this.getCartById(cid);
+    } catch (error) {
+      console.error(`Error trying to update all products from the cart: ${error}`);
+    };
+  };
+
+
+  updateQuantity = async (cid, pid, updatedQuantity) => {
+    try {
+      const currentCart = await this.getCartById(cid);
+      const indexProduct = currentCart.products.findIndex((item) => item.product.toString() === pid);
+  
+      if (indexProduct !== -1) {
+        currentCart.products[indexProduct].quantity = updatedQuantity;
+        await currentCart.save();
+        return currentCart;
+      } else {
+        return 'Product not found on cart'
+      }
+    } catch (error) {
+      console.error(`Error trying to update product quantity: ${error}`);
+    }
+  };
+
 };
 
 const cartsManager = new CartsManager();

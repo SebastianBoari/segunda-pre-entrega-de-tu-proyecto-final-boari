@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
-const productCollection = "products";
+import mongoosePaginate from 'mongoose-paginate-v2';
 
+const productCollection = "products";
 const productSchema = new mongoose.Schema({
   title:{ 
     type: String, 
@@ -31,21 +32,7 @@ const productSchema = new mongoose.Schema({
   thumbnail: String,
 });
 
+productSchema.plugin(mongoosePaginate);
 const productModel = mongoose.model(productCollection, productSchema);
 
 export default productModel;
-
-
-
-/*
-{
-  "title": "Un titulo hermoso",
-  "description": "Una descripcion muy descriptiva",
-  "code": "ProdDePrueba123",
-  "price": 255,
-  "category": "category",
-  "status": true,
-  "stock": 25,
-  "thumbnail": "soylindo.jpg"
-}
-*/

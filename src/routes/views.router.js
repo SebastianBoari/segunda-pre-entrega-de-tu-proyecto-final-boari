@@ -4,11 +4,22 @@ import productManager from '../dao/mongodb-managers/ProductManager.js';
 
 // Get
 router.get('/', async (req, res) => {
-    
     try {
-        const products = await productManager.getProducts();
-  
+        const {limit, page, sort, query} = req.query;
+        const products = await productManager.getProducts(limit, page, sort, query);
+
+        products.prevLink = products.hasPrevPage ? `/products?page=${products.prevPage}` : null;
+        products.nextLink = products.hasNextPage ? `/products?page=${products.nextPage}` : null;
+        
+        if(products.totalPages > 1){
+            products.totalPagesArray = [];
+            for (let i = 1; i <= products.totalPages; i++) {
+                products.totalPagesArray.push(i);
+            };
+        }; 
+
         res.status(200).render('products', {
+            script: 'index',
             style: 'index',
             title: 'Productos',
             products: products
@@ -22,10 +33,10 @@ router.get('/', async (req, res) => {
 
 // Get by ID
 router.get('/:pid', async (req, res) => {
-    const pid = req.params.pid;
+    const productId = req.params.pid;
 
     try {
-        const product = await productManager.getProductById(pid);
+        const product = await productManager.getProductById(productId);
   
         res.status(200).render('product', {
             style: 'index',

@@ -18,6 +18,41 @@ body{
     width: 212px!important;
     object-fit: cover!important;
 }
+#plusMinus{
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+    background-color: grey;
+    border-radius: 5px;
+    max-width: fit-content;
+    height: 40px;
+    gap: 8px;
+    padding: 8px;
+}
+#plusMinus button{
+    background-color: rgba(0.23, 0.23, 0.23, 0);
+    outline: none;
+    border: none;
+    font-size: 16px;
+    font-family: sans-serif;
+    font-weight: 400;
+    color: white;
+}
+#plusMinus p{
+    vertical-align: middle;
+    font-size: 16px;
+    font-family: sans-serif;
+    font-weight: 400;
+    color: white;
+    line-height: normal;
+    margin: 0;
+}
+#botonera{
+    display: flex;
+    flex-flow: row;
+    gap: 16px;
+}
 #form-container{
     padding: 32px;
     margin: 32px 0;
@@ -89,4 +124,31 @@ body{
 }
 #deleteInput:hover{
     background-color:  #db2828;
+}
+
+#nav{
+    display: flex;
+    flex-flow: row;
+    gap: 32px;
+    padding: 8px 0;
+}
+#nav .nav-container{
+    background-color: white;
+    border-radius: 5px;
+    padding: 8px;
+}
+#nav .nav-container ul{
+    list-style: none;
+    display: flex;
+    flex-flow: row;
+    gap: 16px;
+    padding: 0px;
+}
+#nav .nav-container ul li a{
+    font-size: 16px;
+    font-weight: 400;
+    text-decoration: none;
+}
+.fakeFormOfCart{
+    display: none;   
 }

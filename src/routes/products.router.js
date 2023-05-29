@@ -5,7 +5,9 @@ import productManager from '../dao/mongodb-managers/ProductManager.js';
 // Get
 router.get('/', async (req, res) => {
   try {
-    const products = await productManager.getProducts();
+    const {limit, page, sort, query} = req.query;
+
+    const products = await productManager.getProducts(limit, page, sort, query);
     res.status(200).send(products);
   } catch (error) {
     res.status(500).send(`Error trying to fetch all the products: ${error}`);

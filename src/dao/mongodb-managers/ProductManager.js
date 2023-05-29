@@ -1,10 +1,39 @@
 import productModel from '../models/products.model.js';
+import mongoose from 'mongoose';
 
 class ProductManager {
+  // DB connect
+  connect = async () => {
+    // Mongoose 
+    mongoose.set("strictQuery", false);
+    try{
+      // Try connection
+      await mongoose.connect("mongodb+srv://sebastianboari:k14t34AswjuUtUso@lsb-db.qyoux2f.mongodb.net/ecommerce");
+      // DB up notif
+      console.log(`Database connection successful: Host - ${mongoose.connection.host}, Database - ${mongoose.connection.name}`);
+    }catch{
+      // Error message
+      console.error(`Database connection failed: ${error}`);
+    };
+  };
+
   // Read
-  getProducts = async () => {
+  getProducts = async (limit, page, sort, query) => {
+    let formatLimit = limit ? Number(limit) : 2;
+    let formatPage = page ? Number(page) : 1;
+    let formatQuery = query ? { category: query } : {};
+    
+    let formatSort ;
+    if(sort === "asc"){
+      formatSort = "1";
+    }else if(sort === "desc"){
+      formatSort = "-1";
+    }else if (sort && sort !== "asc" && sort !== "desc"){
+      throw new Error('Error: Bad Request, just admit asc and desc');
+    };
+
     try {
-      const products = await productModel.find().lean().exec();
+      const products = await productModel.paginate(formatQuery, {page: formatPage, limit: formatLimit, sort: { price: formatSort }, lean: true})
       return products;
     } catch (error) {
       console.error(`Error trying to fetch all products: ${error}`);
